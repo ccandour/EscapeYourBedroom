@@ -11,7 +11,7 @@ import static com.example.escapeyourbedroom.EscapeRoomGame.*;
 
 public class SpriteEvents {
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
-    public static ImageView keypad = new ImageView("file:safe_numpad.png");
+    public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
     public static Rectangle darkenBackground = new Rectangle(WIDTH, HEIGHT, Color.rgb(0, 0, 0, 0.5));
     public static boolean isSafeUnlocked;
     public static void initialize() {
@@ -37,7 +37,7 @@ public class SpriteEvents {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1 ; j++) {
                 temp += 1;
-                String imagePath = "file:safe_numpad_" + temp + ".png";
+                String imagePath = "file:assets/safe_numpad_" + temp + ".png";
                 safeNumpadButtons.add(new ClickableSprite(imagePath, String.valueOf(temp), (7 + 20) * 8 * j, (7 + 20) * 8 * i));
                 safeNumpadButtons.get(safeNumpadButtons.size() - 1).hide();
 

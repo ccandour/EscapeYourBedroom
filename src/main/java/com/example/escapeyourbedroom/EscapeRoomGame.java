@@ -40,10 +40,10 @@ public class EscapeRoomGame extends Application {
         SpriteEvents.initialize();
 
         // Load the backgrounds
-        sceneBackgrounds.add(new ImageView(new Image("file:Background1.png")));
-        sceneBackgrounds.add(new ImageView(new Image("file:Background2.png")));
-        sceneBackgrounds.add(new ImageView(new Image("file:Background3.png")));
-        sceneBackgrounds.add(new ImageView(new Image("file:Background4.png")));
+        sceneBackgrounds.add(new ImageView(new Image("file:assets/Background1.png")));
+        sceneBackgrounds.add(new ImageView(new Image("file:assets/Background2.png")));
+        sceneBackgrounds.add(new ImageView(new Image("file:assets/Background3.png")));
+        sceneBackgrounds.add(new ImageView(new Image("file:assets/Background4.png")));
 
         for (int i = 0; i < sceneBackgrounds.size(); i++) {
             // Add the backgrounds to root
@@ -65,38 +65,38 @@ public class EscapeRoomGame extends Application {
 
         // Add sprites and their properties
         // TODO: Possibly move this to a separate class because it will clutter Main
-        ClickableSprite drawer = new ClickableSprite("file:drawer.png", "Drawer", -600 , 250);
+        ClickableSprite drawer = new ClickableSprite("file:assets/drawer.png", "Drawer", -600 , 250);
         drawer.setOnMouseClicked(event -> drawer.zoomHandler());
         drawer.setHighlightOnHover();
         drawer.setParentScene(2);
-        drawer.setZoomedImage("file:drawer.png");
+        drawer.setZoomedImage("file:assets/drawer.png");
 
-        ClickableSprite box = new ClickableSprite("file:box.png", "Box", 600 , 250);
+        ClickableSprite box = new ClickableSprite("file:assets/box.png", "Box", 600 , 250);
         box.setOnMouseClicked(event -> box.zoomHandler());
         box.setHighlightOnHover();
         box.setParentScene(1);
-        box.setZoomedImage("file:box_zoom.png");
+        box.setZoomedImage("file:assets/box_zoom.png");
 
-        ClickableSprite painting = new ClickableSprite("file:painting.png", "Painting", 400, -200);
+        ClickableSprite painting = new ClickableSprite("file:assets/painting.png", "Painting", 400, -200);
         painting.setOnMouseClicked(mouseEvent -> painting.zoomHandler());
         painting.setHighlightOnHover();
         painting.setParentScene(0);
-        painting.setZoomedImage("file:painting_zoom.png");
+        painting.setZoomedImage("file:assets/painting_zoom.png");
 
-        ClickableSprite safe = new ClickableSprite("file:safe.png", "Safe", 500, 250);
+        ClickableSprite safe = new ClickableSprite("file:assets/safe.png", "Safe", 500, 250);
         safe.setHighlightOnHover();
         safe.setParentScene(2);
-        safe.setZoomedImage("file:safe_zoom.png");
+        safe.setZoomedImage("file:assets/safe_zoom.png");
         safe.setOnMouseClicked(mouseEvent -> {
             if (SpriteEvents.isSafeUnlocked) safe.zoomHandler();
             else SpriteEvents.safeShowNumpad();
         });
 
-        rightArrow = new ClickableSprite("file:Right_Arrow.png", "Go right", 900, 0);
+        rightArrow = new ClickableSprite("file:assets/Right_Arrow.png", "Go right", 900, 0);
         rightArrow.setHighlightOnHover();
         rightArrow.setOnMouseClicked(mouseEvent -> nextBackground());
 
-        leftArrow = new ClickableSprite("file:Left_Arrow.png", "Go left", -900, 0);
+        leftArrow = new ClickableSprite("file:assets/Left_Arrow.png", "Go left", -900, 0);
         leftArrow.setHighlightOnHover();
         leftArrow.setOnMouseClicked(mouseEvent -> prevBackground());
 
