@@ -65,6 +65,9 @@ class ClickableSprite extends ImageView {
     }
     // The name needs some refinement
     void zoomInto() {
+        // Revert scale back to the un-zoomed one so that the sprite isn't growing when zooming and un-zooming
+        setScaleX(this.getScaleX() * (1 / 1.1));
+        setScaleY(this.getScaleY() * (1 / 1.1));
         // Hide all sprites on the current scene
         updateSpritesVisibility(currentScene, false);
 
