@@ -25,6 +25,7 @@ public class SpriteEvents {
         leftArrow.hide();
         darkenBackground.setVisible(true);
         darkenBackground.toFront();
+        root.getChildren().add(darkenBackground);
         keypad.setVisible(true);
         keypad.toFront();
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
