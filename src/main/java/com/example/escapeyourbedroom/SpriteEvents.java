@@ -4,6 +4,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ public class SpriteEvents {
     public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
     public static Rectangle darkenBackground = new Rectangle(WIDTH, HEIGHT, Color.rgb(0, 0, 0, 0.5));
     public static boolean isSafeUnlocked;
+    public static
     public static void initialize() {
         darkenBackground.setVisible(false);
 
@@ -21,6 +23,7 @@ public class SpriteEvents {
         initializeSafe();
     }
     public static void safeShowNumpad() {
+
         rightArrow.hide();
         leftArrow.hide();
         darkenBackground.setVisible(true);
