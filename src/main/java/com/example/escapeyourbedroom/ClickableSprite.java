@@ -49,8 +49,8 @@ class ClickableSprite extends ImageView {
             if (!isZoomed) {
                 // When the mouse exits the sprite, hide the name tag and stop highlighting it
                 nameTag.hide();
-                setScaleX(this.getScaleX() * (1 / 1.1));
-                setScaleY(this.getScaleY() * (1 / 1.1));
+                setScaleX(1);
+                setScaleY(1);
             }
         });
         setOnMouseMoved(mouseEvent -> {
@@ -66,12 +66,12 @@ class ClickableSprite extends ImageView {
     // The name needs some refinement
     void zoomInto() {
         // Revert scale back to the un-zoomed one so that the sprite isn't growing when zooming and un-zooming
-        setScaleX(this.getScaleX() * (1 / 1.1));
-        setScaleY(this.getScaleY() * (1 / 1.1));
+        setScaleX(1);
+        setScaleY(1);
         // Hide all sprites on the current scene
         updateSpritesVisibility(currentScene, false);
 
-        // TEMP: move the clicked sprite to the middle, increase its size and show it
+        // Renders the zoomed-in item
         setImage(zoomedImage);
         setTranslateX(0);
         setTranslateY(0);
@@ -81,10 +81,12 @@ class ClickableSprite extends ImageView {
     void zoomOut() {
         // Show all sprites on the current scene
         updateSpritesVisibility(currentScene, true);
-        setImage(normalImage);
+        setImage(this.normalImage);
         setTranslateX(x);
         setTranslateY(y);
+        exitButton.hide(); // Hide the exit button on zoom-out
         isZoomed = false;
+
     }
     void zoomHandler() {
         if (isZoomed) {

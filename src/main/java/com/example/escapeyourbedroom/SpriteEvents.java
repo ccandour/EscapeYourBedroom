@@ -21,6 +21,8 @@ public class SpriteEvents {
         initializeSafe();
     }
     public static void safeShowNumpad() {
+        rightArrow.hide();
+        leftArrow.hide();
         darkenBackground.setVisible(true);
         darkenBackground.toFront();
         keypad.setVisible(true);
@@ -28,6 +30,7 @@ public class SpriteEvents {
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
             safeNumpadButton.show();
         }
+        exitButton();
     }
     private static void initializeSafe() {
         keypad.setVisible(false);
@@ -68,5 +71,17 @@ public class SpriteEvents {
                 }
             });
         }
+    }
+    public static void exitButton() {
+        exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
+        exitButton.show();
+        exitButton.setHighlightOnHover();
+        exitButton.setOnMouseClicked(event -> {
+            // Hide keypad and render the background once again
+            nextBackground();
+            prevBackground();
+            updateSpritesVisibility(currentScene, true);
+            exitButton.hide();
+        });
     }
 }

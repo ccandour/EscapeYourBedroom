@@ -1,14 +1,20 @@
 package com.example.escapeyourbedroom;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.escapeyourbedroom.EscapeRoomGame.exitButton;
 
 public class EscapeRoomGame extends Application {
     public static final int WIDTH = 1920;
@@ -18,6 +24,7 @@ public class EscapeRoomGame extends Application {
     public static int currentScene = 0;
     public static ClickableSprite rightArrow;
     public static ClickableSprite leftArrow;
+    public static ClickableSprite exitButton;
     public static NameTag nameTag;
     public static PopoutMessage popoutMessage;
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
@@ -63,22 +70,38 @@ public class EscapeRoomGame extends Application {
         popoutMessage = new PopoutMessage();
 
 
+
         // Add sprites and their properties
         // TODO: Possibly move this to a separate class because it will clutter Main
         ClickableSprite drawer = new ClickableSprite("file:assets/drawer.png", "Drawer", -600 , 250);
-        drawer.setOnMouseClicked(event -> drawer.zoomHandler());
+        drawer.setOnMouseClicked(event -> {
+            if (!drawer.isZoomed) {
+                drawer.zoomInto();
+                exitButton(drawer);
+            }
+        });
         drawer.setHighlightOnHover();
         drawer.setParentScene(2);
         drawer.setZoomedImage("file:assets/drawer.png");
 
         ClickableSprite box = new ClickableSprite("file:assets/box.png", "Box", 600 , 250);
-        box.setOnMouseClicked(event -> box.zoomHandler());
+        box.setOnMouseClicked(event -> {
+            if (!box.isZoomed) {
+                box.zoomInto();
+                exitButton(box);
+            }
+        });
         box.setHighlightOnHover();
         box.setParentScene(1);
         box.setZoomedImage("file:assets/box_zoom.png");
 
         ClickableSprite painting = new ClickableSprite("file:assets/painting.png", "Painting", 400, -200);
-        painting.setOnMouseClicked(mouseEvent -> painting.zoomHandler());
+        painting.setOnMouseClicked(event -> {
+            if (!painting.isZoomed) {
+                painting.zoomInto();
+                exitButton(painting);
+            }
+        });
         painting.setHighlightOnHover();
         painting.setParentScene(0);
         painting.setZoomedImage("file:assets/painting_zoom.png");
@@ -88,7 +111,12 @@ public class EscapeRoomGame extends Application {
         safe.setParentScene(2);
         safe.setZoomedImage("file:assets/safe_zoom.png");
         safe.setOnMouseClicked(mouseEvent -> {
-            if (SpriteEvents.isSafeUnlocked) safe.zoomHandler();
+            if (SpriteEvents.isSafeUnlocked) {
+                if (!safe.isZoomed) {
+                    safe.zoomInto();
+                    exitButton(safe);
+                }
+            }
             else SpriteEvents.safeShowNumpad();
         });
 
@@ -100,14 +128,27 @@ public class EscapeRoomGame extends Application {
         leftArrow.setHighlightOnHover();
         leftArrow.setOnMouseClicked(mouseEvent -> prevBackground());
 
-
+        Timeline temp = new Timeline(new KeyFrame(Duration.millis(500), event -> {
+            System.out.println(box.isZoomed);
+        }));
+        temp.setCycleCount(Animation.INDEFINITE);
+        temp.play();
 
         primaryStage.show();
     }
 
+    public static void exitButton(ClickableSprite sprite) {
+        exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
+        exitButton.show();
+        exitButton.setHighlightOnHover();
+        exitButton.setOnMouseClicked(event -> sprite.zoomOut());
+    }
     public static void nextBackground() {
         // Single line for cycling through the number of backgrounds (instead of doing some weird ifs)
         int nextScene = (currentScene + 1) % sceneBackgrounds.size();
+
+        // Hide all sprites from the current background
+        updateSpritesVisibility(currentScene, false);
 
         // Set the background to the next scene's background (also hides previous scene sprites so cool)
         sceneBackgrounds.get(nextScene).toFront();
@@ -121,6 +162,9 @@ public class EscapeRoomGame extends Application {
     public static void prevBackground() {
         // Single line for cycling through the number of backgrounds (instead of doing some weird ifs)
         int prevScene = (currentScene - 1 + sceneBackgrounds.size()) % sceneBackgrounds.size();
+
+        // Hide all sprites from the current background
+        updateSpritesVisibility(currentScene, false);
 
         // Set the background to the previous scene's background (also hides previous sprites so cool)
         sceneBackgrounds.get(prevScene).toFront();
