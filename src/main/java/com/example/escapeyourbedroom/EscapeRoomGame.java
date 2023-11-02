@@ -128,11 +128,11 @@ public class EscapeRoomGame extends Application {
         leftArrow.setHighlightOnHover();
         leftArrow.setOnMouseClicked(mouseEvent -> prevBackground());
 
-        Timeline temp = new Timeline(new KeyFrame(Duration.millis(500), event -> {
-            System.out.println(box.isZoomed);
-        }));
-        temp.setCycleCount(Animation.INDEFINITE);
-        temp.play();
+//        Timeline temp = new Timeline(new KeyFrame(Duration.millis(500), event -> {
+//            System.out.println(box.isZoomed);
+//        }));
+//        temp.setCycleCount(Animation.INDEFINITE);
+//        temp.play();
 
         primaryStage.show();
     }

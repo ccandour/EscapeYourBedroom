@@ -64,6 +64,10 @@ public class SpriteEvents {
                         button.hide();
                     }
                     keypad.setVisible(false);
+                    nextBackground();
+                    prevBackground();
+                    exitButton.hide();
+                    root.getChildren().remove(darkenBackground);
                     popoutMessage.showMessage("The safe unlocks!");
                 }
                 else if (code[0].length() == 4){
@@ -83,6 +87,7 @@ public class SpriteEvents {
             prevBackground();
             updateSpritesVisibility(currentScene, true);
             exitButton.hide();
+            root.getChildren().remove(darkenBackground);
         });
     }
 }
