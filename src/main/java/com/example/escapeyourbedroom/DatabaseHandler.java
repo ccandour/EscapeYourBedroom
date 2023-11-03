@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DatabaseHandler {
     static Connection connection;
-    public static void main( String args[] ) {
+    public static void main() {
         Connection c = null;
 
         try {
@@ -15,9 +15,6 @@ public class DatabaseHandler {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
-        System.out.println("Opened inventory database successfully");
-        selectAll();
-        System.out.println(addItemToInventory("key5.png"));
     }
 
     // That's something we'll use in rendering items in inventory

@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.escapeyourbedroom.EscapeRoomGame.exitButton;
+import com.example.escapeyourbedroom.DatabaseHandler;
 
 public class EscapeRoomGame extends Application {
     public static final int WIDTH = 1920;
@@ -25,6 +27,7 @@ public class EscapeRoomGame extends Application {
     public static ClickableSprite rightArrow;
     public static ClickableSprite leftArrow;
     public static ClickableSprite exitButton;
+    public static ClickableSprite childSprite;
     public static NameTag nameTag;
     public static PopoutMessage popoutMessage;
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
@@ -39,6 +42,7 @@ public class EscapeRoomGame extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        DatabaseHandler.main();
         primaryStage.setTitle("Escape Room Game");
         root = new StackPane();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
@@ -89,6 +93,7 @@ public class EscapeRoomGame extends Application {
             if (!box.isZoomed) {
                 box.zoomInto();
                 exitButton(box);
+                renderChildSprite("key1.png", -95, -50);
             }
         });
         box.setHighlightOnHover();
@@ -143,6 +148,20 @@ public class EscapeRoomGame extends Application {
         exitButton.setHighlightOnHover();
         exitButton.setOnMouseClicked(event -> sprite.zoomOut());
     }
+
+    public static void renderChildSprite(String filename, int X, int Y) {
+        String imagePath = "file:assets/" + filename;
+        if (DatabaseHandler.isItemPickedUp(filename)) return;
+
+        childSprite = new ClickableSprite(imagePath, "Pick up", X, Y);
+        childSprite.show();
+        childSprite.setHighlightOnHover();
+        childSprite.setOnMouseClicked(event -> {
+            DatabaseHandler.addItemToInventory(filename);
+            childSprite.hide();
+        });
+    }
+
     public static void nextBackground() {
         // Single line for cycling through the number of backgrounds (instead of doing some weird ifs)
         int nextScene = (currentScene + 1) % sceneBackgrounds.size();

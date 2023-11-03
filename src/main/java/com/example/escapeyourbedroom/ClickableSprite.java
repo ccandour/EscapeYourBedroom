@@ -85,6 +85,7 @@ class ClickableSprite extends ImageView {
         setTranslateX(x);
         setTranslateY(y);
         exitButton.hide(); // Hide the exit button on zoom-out
+        if (childSprite != null) childSprite.hide();
         isZoomed = false;
 
     }
