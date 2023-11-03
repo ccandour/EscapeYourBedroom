@@ -26,6 +26,7 @@ public class EscapeRoomGame extends Application {
     public static int currentScene = 0;
     public static ClickableSprite rightArrow;
     public static ClickableSprite leftArrow;
+    public static ClickableSprite backpack;
     public static ClickableSprite exitButton;
     public static ClickableSprite childSprite;
     public static NameTag nameTag;
@@ -93,7 +94,7 @@ public class EscapeRoomGame extends Application {
             if (!box.isZoomed) {
                 box.zoomInto();
                 exitButton(box);
-                renderChildSprite("key1.png", -95, -50);
+                renderChildSprite("key_1.png", -95, -50);
             }
         });
         box.setHighlightOnHover();
@@ -120,19 +121,24 @@ public class EscapeRoomGame extends Application {
                 if (!safe.isZoomed) {
                     safe.zoomInto();
                     exitButton(safe);
-                    renderChildSprite("key3.png", 150, 350);
+                    renderChildSprite("key_3.png", 150, 350);
                 }
             }
             else SpriteEvents.safeShowNumpad();
         });
 
-        rightArrow = new ClickableSprite("file:assets/Right_Arrow.png", "Go right", 900, 0);
+        // Setting up the navigation buttons
+        rightArrow = new ClickableSprite("file:assets/right_arrow.png", "Go right", 900, 0);
         rightArrow.setHighlightOnHover();
         rightArrow.setOnMouseClicked(mouseEvent -> nextBackground());
 
-        leftArrow = new ClickableSprite("file:assets/Left_Arrow.png", "Go left", -900, 0);
+        leftArrow = new ClickableSprite("file:assets/left_arrow.png", "Go left", -900, 0);
         leftArrow.setHighlightOnHover();
         leftArrow.setOnMouseClicked(mouseEvent -> prevBackground());
+
+        backpack = new ClickableSprite("file:assets/backpack.png", "Open inventory", 750, -450);
+        backpack.setHighlightOnHover();
+        backpack.setOnMouseClicked(mouseEvent -> SpriteEvents.renderInventory());
 
 //        Timeline temp = new Timeline(new KeyFrame(Duration.millis(500), event -> {
 //            System.out.println(box.isZoomed);
@@ -179,6 +185,7 @@ public class EscapeRoomGame extends Application {
         // Update currentBackground
         currentScene = nextScene;
     }
+
     public static void prevBackground() {
         // Single line for cycling through the number of backgrounds (instead of doing some weird ifs)
         int prevScene = (currentScene - 1 + sceneBackgrounds.size()) % sceneBackgrounds.size();
@@ -195,18 +202,22 @@ public class EscapeRoomGame extends Application {
         // Update currentBackground
         currentScene = prevScene;
     }
+
     public static List<ClickableSprite> getSpritesFromScene(int scene) {
         return sceneSprites.get(scene);
     }
+
     public static void updateSpritesVisibility(int scene, boolean isVisible) {
         // Update the visibility of the arrows
         if (isVisible) {
             rightArrow.show();
             leftArrow.show();
+            backpack.show();
         }
         else {
             rightArrow.hide();
             leftArrow.hide();
+            backpack.hide();
         }
         // Update the visibility of the sprites
         List<ClickableSprite> sprites = getSpritesFromScene(scene);

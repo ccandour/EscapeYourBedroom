@@ -59,10 +59,52 @@ class ClickableSprite extends ImageView {
             else nameTag.hide();
         });
     }
+
+    // For inventory
+    void setOnlyLabelOnHoover() {
+        setOnMouseEntered(event -> {
+            if (!isZoomed) {
+                // When mouse enters a sprite, show its name on the name tag and highlight it
+                nameTag.setText(name);
+                nameTag.show();
+            }
+        });
+        setOnMouseExited(event -> {
+            if (!isZoomed) {
+                // When the mouse exits the sprite, hide the name tag and stop highlighting it
+                nameTag.hide();
+            }
+        });
+        setOnMouseMoved(mouseEvent -> {
+            // If the sprite its zoomed in, make the name tag follow the cursor; otherwise hide it
+            if (!isZoomed) nameTag.setPosToCursor(mouseEvent.getSceneX(),  mouseEvent.getSceneY());
+            else nameTag.hide();
+        });
+    }
+
+    // For safe numpad
+    void setOnlyZoomOnHoover() {
+        setOnMouseEntered(event -> {
+            if (!isZoomed) {
+                // When mouse enters a sprite, zoom it 1.1 times
+                setScaleX(this.getScaleX() * 1.1);
+                setScaleY(this.getScaleY() * 1.1);
+            }
+        });
+        setOnMouseExited(event -> {
+            if (!isZoomed) {
+                // When the mouse exits the sprite, revert scale back to 1
+                setScaleX(1);
+                setScaleY(1);
+            }
+        });
+    }
+
     void setParentScene(int sceneIndex) {
        sceneSprites.get(sceneIndex).add(this);
        if (sceneIndex != currentScene) hide();
     }
+
     // The name needs some refinement
     void zoomInto() {
         // Revert scale back to the un-zoomed one so that the sprite isn't growing when zooming and un-zooming
