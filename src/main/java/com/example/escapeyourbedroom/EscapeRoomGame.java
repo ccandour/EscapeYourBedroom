@@ -120,6 +120,7 @@ public class EscapeRoomGame extends Application {
                 if (!safe.isZoomed) {
                     safe.zoomInto();
                     exitButton(safe);
+                    renderChildSprite("key3.png", 150, 350);
                 }
             }
             else SpriteEvents.safeShowNumpad();
