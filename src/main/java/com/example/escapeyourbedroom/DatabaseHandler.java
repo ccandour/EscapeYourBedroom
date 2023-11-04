@@ -76,7 +76,7 @@ public class DatabaseHandler {
 
         try {
                 Statement statement = connection.createStatement();
-                statement.execute(sql);
+                statement.executeUpdate(sql);
                 return true;
 
         }
@@ -91,7 +91,7 @@ public class DatabaseHandler {
                 "SET filename = NULL WHERE filename = '%s'", itemName);
         try {
             Statement statement = connection.createStatement();
-            statement.execute(sql);
+            statement.executeUpdate(sql);
             return true;
 
         }
@@ -128,7 +128,7 @@ public class DatabaseHandler {
 
         try {
             Statement statement = connection.createStatement();
-            statement.executeQuery(sql);
+            statement.executeUpdate(sql);
             return true;
 
         } catch (SQLException e) {
@@ -157,5 +157,22 @@ public class DatabaseHandler {
             System.out.println(e.getMessage());
         }
         return locksOpen;
+    }
+
+    public static void resetDB() {
+        String inventory = String.format("UPDATE inventory " +
+                "SET filename = NULL");
+
+        String progression = String.format("UPDATE progression " +
+                "SET value = 0");
+
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(inventory);
+            statement.executeUpdate(progression);
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

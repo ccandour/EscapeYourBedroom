@@ -134,7 +134,7 @@ public class EscapeRoomGame extends Application {
         door.setHighlightOnHover();
         door.setParentScene(3);
         door.setOnMouseClicked(mouseEvent -> {
-                    SpriteEvents.renderLock(door);
+                SpriteEvents.renderLock(door);
         });
 
         // Setting up the navigation buttons
@@ -149,12 +149,6 @@ public class EscapeRoomGame extends Application {
         backpack = new ClickableSprite("file:assets/backpack.png", "Open inventory", 750, -450);
         backpack.setHighlightOnHover();
         backpack.setOnMouseClicked(mouseEvent -> SpriteEvents.renderInventory());
-
-//        Timeline temp = new Timeline(new KeyFrame(Duration.millis(500), event -> {
-//            System.out.println(box.isZoomed);
-//        }));
-//        temp.setCycleCount(Animation.INDEFINITE);
-//        temp.play();
 
         primaryStage.show();
     }

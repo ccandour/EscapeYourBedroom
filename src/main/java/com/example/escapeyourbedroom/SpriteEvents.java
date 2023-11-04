@@ -1,9 +1,13 @@
 package com.example.escapeyourbedroom;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 
 import java.util.ArrayList;
@@ -14,7 +18,10 @@ import static com.example.escapeyourbedroom.EscapeRoomGame.*;
 public class SpriteEvents {
     // Background darken
     public static Rectangle darkenBackground = new Rectangle(WIDTH, HEIGHT, Color.rgb(0, 0, 0, 0.5));
-    public static Rectangle bg;
+    static Rectangle bg;
+    public static Rectangle white = new Rectangle(WIDTH, HEIGHT, Color.rgb(255, 255, 255, 1));
+    static ImageView victory1 = new ImageView("file:assets/victory1.png");
+    static ImageView victory2 = new ImageView("file:assets/victory2.png");
     // Safe things
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
     public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
@@ -171,6 +178,10 @@ public class SpriteEvents {
         keyhole.setOnMouseClicked(event -> {
             if (DatabaseHandler.isItemPickedUp("key_" + (locksOpen+1) + ".png")) {
                 locksOpen++;
+                if (locksOpen == 3) {
+                    renderVictoryScreen();
+                    return;
+                }
                 DatabaseHandler.removeItemFromInventory("key_" + locksOpen + ".png");
                 DatabaseHandler.changeProgression("lock_" + locksOpen);
                 door.setImage(new Image("file:assets/door_" + locksOpen + ".png"));
@@ -238,6 +249,58 @@ public class SpriteEvents {
         root.getChildren().add(bg);
         bg.setVisible(true);
         bg.toFront();
+
+    }
+
+    public static void renderVictoryScreen() {
+        Timeline victory = new Timeline();
+        Timeline victoryFlashing = new Timeline();
+
+        // Background fade-in
+        KeyValue transparent = new KeyValue(white.opacityProperty(), 0.0);
+        KeyValue opaque = new KeyValue(white.opacityProperty(), 1.0);
+
+        KeyFrame start = new KeyFrame(Duration.ZERO, transparent);
+        KeyFrame end = new KeyFrame(Duration.millis(2000), opaque);
+
+        // Flashing text
+        KeyValue vic1opq = new KeyValue(victory1.opacityProperty(), 1.0);
+        KeyValue vic1tns = new KeyValue(victory1.opacityProperty(), 0.0);
+        KeyValue vic2opq = new KeyValue(victory2.opacityProperty(), 1.0);
+        KeyValue vic2tns = new KeyValue(victory2.opacityProperty(), 0.0);
+
+
+        KeyFrame vic1trans = new KeyFrame(Duration.millis(1000), vic1opq);
+        KeyFrame vic1opaque = new KeyFrame(Duration.millis(2000), vic1tns);
+        KeyFrame vic2trans = new KeyFrame(Duration.millis(1000), vic2tns);
+        KeyFrame vic2opaque = new KeyFrame(Duration.millis(2000), vic2opq);
+
+
+        victory.getKeyFrames().addAll(start, end);
+        victory.setCycleCount(1);
+
+        victoryFlashing.getKeyFrames().addAll(vic1trans, vic1opaque, vic2trans, vic2opaque);
+        victoryFlashing.setCycleCount(5);
+
+        victory.setOnFinished(event -> {
+            root.getChildren().add(victory1);
+            victory1.setVisible(true);
+            victory1.toFront();
+            root.getChildren().add(victory2);
+            victory2.setVisible(true);
+            victory2.toFront();
+            victoryFlashing.play();
+        });
+
+        victoryFlashing.setOnFinished(event -> {
+            DatabaseHandler.resetDB();
+            System.exit(1943);
+        });
+
+        root.getChildren().add(white);
+        white.setVisible(true);
+        white.toFront();
+        victory.play();
 
     }
 
