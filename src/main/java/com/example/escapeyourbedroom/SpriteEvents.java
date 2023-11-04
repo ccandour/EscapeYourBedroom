@@ -1,5 +1,6 @@
 package com.example.escapeyourbedroom;
 
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -20,6 +21,9 @@ public class SpriteEvents {
     // Inventory things
     static List<ClickableSprite> items = new ArrayList<>();
     public static ImageView inventory = new ImageView("file:assets/inventory.png");
+    // Door things
+    public static ImageView lock = new ImageView("file:assets/lock1_closeup.png");
+    public static int locksOpen = 0;
 
     public static void initialize() {
         darkenBackground.setVisible(false);
@@ -27,9 +31,10 @@ public class SpriteEvents {
         // I've split initialization into each sprite, so it's less cluttered
         initializeSafe();
         initializeInventory();
+        initializeLock();
     }
 
-    // Safe numpad rendering
+    // --- SAFE METHODS ---
     private static void initializeSafe() {
         keypad.setVisible(false);
 
@@ -56,7 +61,7 @@ public class SpriteEvents {
                 code[0] += safeNumpadButton.name;
 
                 if (code[0].equals("1943")) {
-                    isSafeUnlocked = true;
+                    DatabaseHandler.changeProgression("safe");
 
                     for (ClickableSprite button : safeNumpadButtons) {
                         button.hide();
@@ -86,7 +91,7 @@ public class SpriteEvents {
         exitButton();
     }
 
-    // Inventory rendering
+    // --- INVENTORY METHODS ---
     private static void initializeInventory() {
         inventory.setVisible(false);
         refreshInventory();
@@ -122,6 +127,55 @@ public class SpriteEvents {
         exitButton();
     }
 
+    // --- DOOR METHODS ---
+    private static void initializeLock() {
+        lock.setVisible(false);
+        refreshLock();
+        root.getChildren().add(lock);
+    }
+
+    private static void refreshLock() {
+        locksOpen = DatabaseHandler.checkLocksOpen();
+        lock.setImage(new Image("file:assets/lock" + (locksOpen+1) + "_closeup.png"));
+    }
+
+    public static void renderLock(ClickableSprite door) {
+        setDarkenBackground();
+        refreshLock();
+        lock.setVisible(true);
+        lock.toFront();
+        keyHole(door);
+        exitButton();
+    }
+
+    public static void keyHole(ClickableSprite door) {
+        ClickableSprite keyhole = new ClickableSprite("file:assets/keyhole.png", "Open using Key " + (locksOpen+1), 0, 132);
+        keyhole.show();
+        keyhole.setHighlightOnHover();
+        keyhole.setOnMouseClicked(event -> {
+            if (DatabaseHandler.isItemPickedUp("key_" + (locksOpen+1) + ".png")) {
+                locksOpen++;
+                DatabaseHandler.removeItemFromInventory("key_" + locksOpen + ".png");
+                DatabaseHandler.changeProgression("lock_" + locksOpen);
+                door.setImage(new Image("file:assets/door_" + locksOpen + ".png"));
+                nextBackground();
+                prevBackground();
+                updateSpritesVisibility(currentScene, true);
+                keyhole.hide();
+                root.getChildren().remove(darkenBackground);
+                popoutMessage.showMessage("Lock opened!");
+            }
+            else {
+                nextBackground();
+                prevBackground();
+                updateSpritesVisibility(currentScene, true);
+                keyhole.hide();
+                root.getChildren().remove(darkenBackground);
+                popoutMessage.showMessage("You need a right key for that!");
+            }
+        });
+    }
+
     // Needed for exiting numpad / eq view
     public static void exitButton() {
         exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
@@ -147,6 +201,7 @@ public class SpriteEvents {
         root.getChildren().add(darkenBackground);
     }
 
+    //Get _icon version of a filename
     public static String iconizeName(String original) {
         StringBuilder iconized = new StringBuilder();
         for (int i = 0; i < original.length(); i++) {

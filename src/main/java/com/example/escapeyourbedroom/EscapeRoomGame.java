@@ -117,7 +117,7 @@ public class EscapeRoomGame extends Application {
         safe.setParentScene(2);
         safe.setZoomedImage("file:assets/safe_zoom.png");
         safe.setOnMouseClicked(mouseEvent -> {
-            if (SpriteEvents.isSafeUnlocked) {
+            if (DatabaseHandler.checkProgression("safe")) {
                 if (!safe.isZoomed) {
                     safe.zoomInto();
                     exitButton(safe);
@@ -125,6 +125,13 @@ public class EscapeRoomGame extends Application {
                 }
             }
             else SpriteEvents.safeShowNumpad();
+        });
+
+        ClickableSprite door = new ClickableSprite("file:assets/door_" + (SpriteEvents.locksOpen) + ".png", "Door [LOCKED]", 250, -8);
+        door.setHighlightOnHover();
+        door.setParentScene(3);
+        door.setOnMouseClicked(mouseEvent -> {
+                    SpriteEvents.renderLock(door);
         });
 
         // Setting up the navigation buttons
@@ -159,6 +166,11 @@ public class EscapeRoomGame extends Application {
     public static void renderChildSprite(String filename, int X, int Y) {
         String imagePath = "file:assets/" + filename;
         if (DatabaseHandler.isItemPickedUp(filename)) return;
+        if (filename.startsWith("key")) {
+            String removedDotPng = filename.replace(".png", "");
+            String lock = removedDotPng.replace("key", "lock");
+            if (DatabaseHandler.checkProgression(lock)) return;
+        }
 
         childSprite = new ClickableSprite(imagePath, "Pick up", X, Y);
         childSprite.show();
