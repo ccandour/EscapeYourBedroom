@@ -82,12 +82,13 @@ public class EscapeRoomGame extends Application {
         drawer.setOnMouseClicked(event -> {
             if (!drawer.isZoomed) {
                 drawer.zoomInto();
+                renderChildSprite("note_1.png", -200, -70);
                 exitButton(drawer);
             }
         });
         drawer.setHighlightOnHover();
         drawer.setParentScene(2);
-        drawer.setZoomedImage("file:assets/drawer.png");
+        drawer.setZoomedImage("file:assets/drawer_zoom.png");
 
         ClickableSprite box = new ClickableSprite("file:assets/box.png", "Box", 600 , 250);
         box.setOnMouseClicked(event -> {
@@ -104,6 +105,8 @@ public class EscapeRoomGame extends Application {
         ClickableSprite painting = new ClickableSprite("file:assets/painting.png", "Painting", 400, -200);
         painting.setOnMouseClicked(event -> {
             if (!painting.isZoomed) {
+                SpriteEvents.renderBackground("d7bc5f");
+                renderChildSprite("note_2.png", 0, -276);
                 painting.zoomInto();
                 exitButton(painting);
             }
@@ -160,7 +163,12 @@ public class EscapeRoomGame extends Application {
         exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
         exitButton.show();
         exitButton.setHighlightOnHover();
-        exitButton.setOnMouseClicked(event -> sprite.zoomOut());
+        exitButton.setOnMouseClicked(event -> {
+            sprite.zoomOut();
+            if (SpriteEvents.bg != null) {
+                root.getChildren().remove(SpriteEvents.bg);
+            }
+        });
     }
 
     public static void renderChildSprite(String filename, int X, int Y) {

@@ -14,6 +14,7 @@ import static com.example.escapeyourbedroom.EscapeRoomGame.*;
 public class SpriteEvents {
     // Background darken
     public static Rectangle darkenBackground = new Rectangle(WIDTH, HEIGHT, Color.rgb(0, 0, 0, 0.5));
+    public static Rectangle bg;
     // Safe things
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
     public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
@@ -121,7 +122,22 @@ public class SpriteEvents {
         inventory.toFront();
         for (int i = 0; i < items.size(); i++) {
                 ClickableSprite item = items.get(i);
-                item.setOnlyLabelOnHoover();
+                if (item.name.startsWith("Key")) {
+                    item.setOnlyLabelOnHoover();
+                }
+                else {
+                    item.setHighlightOnHover();
+                    item.setOnMouseClicked(event -> {
+                        darkenBackground.toFront();
+                        exitButton.hide();
+                        String zoomized = item.getImage().getUrl().replace("_icon", "_zoom");
+                        ImageView zoomedNote = new ImageView(new Image(zoomized));
+                        root.getChildren().add(zoomedNote);
+                        zoomedNote.setVisible(true);
+                        zoomedNote.toFront();
+                        itemZoomExitButton();
+                    });
+                }
                 item.show();
         }
         exitButton();
@@ -191,6 +207,22 @@ public class SpriteEvents {
         });
     }
 
+    // Exit button with added inventory rendering
+    public static void itemZoomExitButton() {
+        exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
+        exitButton.show();
+        exitButton.setHighlightOnHover();
+        exitButton.setOnMouseClicked(event -> {
+            // Hide keypad and render the background once again
+            nextBackground();
+            prevBackground();
+            updateSpritesVisibility(currentScene, true);
+            exitButton.hide();
+            root.getChildren().remove(darkenBackground);
+            renderInventory();
+        });
+    }
+
     // Hides all buttons and darkens the background
     public static void setDarkenBackground() {
         rightArrow.hide();
@@ -199,6 +231,14 @@ public class SpriteEvents {
         darkenBackground.setVisible(true);
         darkenBackground.toFront();
         root.getChildren().add(darkenBackground);
+    }
+
+    public static void renderBackground(String hex) {
+        bg = new Rectangle(WIDTH, HEIGHT, Color.web(hex));
+        root.getChildren().add(bg);
+        bg.setVisible(true);
+        bg.toFront();
+
     }
 
     //Get _icon version of a filename
@@ -211,6 +251,18 @@ public class SpriteEvents {
             else iconized.append(original.charAt(i));
         }
         return iconized.toString();
+    }
+
+    //Get _zoom version of a filename
+    public static String zoomizeName(String original) {
+        StringBuilder zoomized = new StringBuilder();
+        for (int i = 0; i < original.length(); i++) {
+            if (original.charAt(i) == '.') {
+                zoomized.append("_zoom.");
+            }
+            else zoomized.append(original.charAt(i));
+        }
+        return zoomized.toString();
     }
 
     // Used for inventory items' nameTags to avoid adding another column to the database
