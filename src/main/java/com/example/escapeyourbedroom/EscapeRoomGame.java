@@ -1,24 +1,14 @@
 package com.example.escapeyourbedroom;
 
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
-
-// lmao what is this
-import static com.example.escapeyourbedroom.EscapeRoomGame.exitButton;
-import com.example.escapeyourbedroom.DatabaseHandler;
-import com.example.escapeyourbedroom.SpriteEvents;
 
 public class EscapeRoomGame extends Application {
     public static final int WIDTH = 1920;
@@ -33,7 +23,6 @@ public class EscapeRoomGame extends Application {
     public static ClickableSprite childSprite;
     public static NameTag nameTag;
     public static PopoutMessage popoutMessage;
-    public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
     // A list of lists of all sprites in a given scene (not that complicated once you go insane)
     // I decided to make it this way so when you want to get all the sprites from the current scene you can just sceneSprites.get(currentBackground)
     public static List<List<ClickableSprite>> sceneSprites = new ArrayList<>();
@@ -141,9 +130,7 @@ public class EscapeRoomGame extends Application {
         ClickableSprite door = new ClickableSprite("file:assets/door_" + (SpriteEvents.locksOpen) + ".png", "Door [LOCKED]", 250, -8);
         door.setHighlightOnHover();
         door.setParentScene(3);
-        door.setOnMouseClicked(mouseEvent -> {
-            SpriteEvents.renderLock(door);
-        });
+        door.setOnMouseClicked(mouseEvent -> SpriteEvents.renderLock(door));
 
         // Setting up the navigation buttons
         rightArrow = new ClickableSprite("file:assets/right_arrow.png", "Go right", 900, 0);

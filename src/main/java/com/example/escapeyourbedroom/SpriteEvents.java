@@ -25,7 +25,6 @@ public class SpriteEvents {
     // Safe things
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
     public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
-    public static boolean isSafeUnlocked;
     // Inventory things
     static List<ClickableSprite> items = new ArrayList<>();
     public static ImageView inventory = new ImageView("file:assets/inventory.png");
@@ -357,7 +356,6 @@ public class SpriteEvents {
         temp = temp.replace("file:assets/", "");
         temp = temp.replace(".png", "");
         temp = temp.replace("_"," ");
-        String result = temp.substring(0, 1).toUpperCase() + temp.substring(1);
-        return result;
+        return temp.substring(0, 1).toUpperCase() + temp.substring(1);
     }
 }

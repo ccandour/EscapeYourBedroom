@@ -1,8 +1,5 @@
 package com.example.escapeyourbedroom;
 
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
