@@ -15,8 +15,10 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+// lmao what is this
 import static com.example.escapeyourbedroom.EscapeRoomGame.exitButton;
 import com.example.escapeyourbedroom.DatabaseHandler;
+import com.example.escapeyourbedroom.SpriteEvents;
 
 public class EscapeRoomGame extends Application {
     public static final int WIDTH = 1920;
@@ -90,7 +92,7 @@ public class EscapeRoomGame extends Application {
         drawer.setParentScene(2);
         drawer.setZoomedImage("file:assets/drawer_zoom.png");
 
-        ClickableSprite box = new ClickableSprite("file:assets/box.png", "Box", 600 , 250);
+        ClickableSprite box = new ClickableSprite("file:assets/box.png", "Box", -600 , 250);
         box.setOnMouseClicked(event -> {
             if (!box.isZoomed) {
                 box.zoomInto();
@@ -129,6 +131,12 @@ public class EscapeRoomGame extends Application {
             }
             else SpriteEvents.safeShowNumpad();
         });
+
+        ClickableSprite bed = new ClickableSprite("file:assets/bed.png", "Bed", 500, 300);
+        bed.setHighlightOnHover();
+        bed.setParentScene(1);
+        bed.setZoomedImage("file:assets/bed_zoom.png");
+        bed.setOnMouseClicked(mouseEvent -> SpriteEvents.zoomToBed());
 
         ClickableSprite door = new ClickableSprite("file:assets/door_" + (SpriteEvents.locksOpen) + ".png", "Door [LOCKED]", 250, -8);
         door.setHighlightOnHover();

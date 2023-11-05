@@ -31,6 +31,8 @@ public class SpriteEvents {
     public static ImageView inventory = new ImageView("file:assets/inventory.png");
     // Door things
     public static ImageView lock = new ImageView("file:assets/lock1_closeup.png");
+    public static ClickableSprite bedZoomed = new ClickableSprite("file:assets/bed_zoom.png", "Move Pillow", 0 ,0);
+    public static ImageView bedZoomedNoPillow = new ClickableSprite("file:assets/bed_zoom_zoom_wroooom.png", "", 0, 0);
     public static int locksOpen = 0;
 
     public static void initialize() {
@@ -38,11 +40,14 @@ public class SpriteEvents {
 
         // I've split initialization into each sprite, so it's less cluttered
         initializeSafe();
+        initializeBed();
         initializeInventory();
         initializeLock();
     }
 
     // --- SAFE METHODS ---
+    // I didn't know they could be dangerous
+    // I'll see myself out after this one
     private static void initializeSafe() {
         keypad.setVisible(false);
 
@@ -96,6 +101,24 @@ public class SpriteEvents {
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
             safeNumpadButton.show();
         }
+        exitButton();
+    }
+
+    static void initializeBed() {
+        bedZoomed.setOnMouseClicked(mouseEvent -> {
+            zoomZoomToBed();
+            renderChildSprite("key_2.png", -150, -50);
+        });
+    }
+    static void zoomZoomToBed() {
+        bedZoomedNoPillow.toFront();
+
+        exitButton();
+    }
+
+    // idfc if it looks weird, im tired ok, it'll work
+    public static void zoomToBed() {
+        bedZoomed.show();
         exitButton();
     }
 
