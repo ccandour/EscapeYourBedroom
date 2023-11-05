@@ -101,8 +101,8 @@ class ClickableSprite extends ImageView {
     }
 
     void setParentScene(int sceneIndex) {
-       sceneSprites.get(sceneIndex).add(this);
-       if (sceneIndex != currentScene) hide();
+        sceneSprites.get(sceneIndex).add(this);
+        if (sceneIndex != currentScene) hide();
     }
 
     // The name needs some refinement

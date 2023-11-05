@@ -116,7 +116,7 @@ public class SpriteEvents {
                 String currentItemName = itemsPaths.get(currentItem);
                 items.add(new ClickableSprite(iconizeName(currentItemName),
                         filenameToLabel(currentItemName), (11 + 25) * 8 * j, ((7+25) * 8 * i)+48));
-                        // Y adjusted to the difference of top and bottom margins of inventory background
+                // Y adjusted to the difference of top and bottom margins of inventory background
                 currentItem += 1;
             }
         }
@@ -128,24 +128,24 @@ public class SpriteEvents {
         inventory.setVisible(true);
         inventory.toFront();
         for (int i = 0; i < items.size(); i++) {
-                ClickableSprite item = items.get(i);
-                if (item.name.startsWith("Key")) {
-                    item.setOnlyLabelOnHoover();
-                }
-                else {
-                    item.setHighlightOnHover();
-                    item.setOnMouseClicked(event -> {
-                        darkenBackground.toFront();
-                        exitButton.hide();
-                        String zoomized = item.getImage().getUrl().replace("_icon", "_zoom");
-                        ImageView zoomedNote = new ImageView(new Image(zoomized));
-                        root.getChildren().add(zoomedNote);
-                        zoomedNote.setVisible(true);
-                        zoomedNote.toFront();
-                        itemZoomExitButton();
-                    });
-                }
-                item.show();
+            ClickableSprite item = items.get(i);
+            if (item.name.startsWith("Key")) {
+                item.setOnlyLabelOnHoover();
+            }
+            else {
+                item.setHighlightOnHover();
+                item.setOnMouseClicked(event -> {
+                    darkenBackground.toFront();
+                    exitButton.hide();
+                    String zoomized = item.getImage().getUrl().replace("_icon", "_zoom");
+                    ImageView zoomedNote = new ImageView(new Image(zoomized));
+                    root.getChildren().add(zoomedNote);
+                    zoomedNote.setVisible(true);
+                    zoomedNote.toFront();
+                    itemZoomExitButton();
+                });
+            }
+            item.show();
         }
         exitButton();
     }

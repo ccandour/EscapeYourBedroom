@@ -28,8 +28,8 @@ public class DatabaseHandler {
         String sql = "SELECT field_id, filename FROM inventory";
 
         try (
-             Statement statement = connection.createStatement();
-             ResultSet result = statement.executeQuery(sql)){
+            Statement statement = connection.createStatement();
+            ResultSet result = statement.executeQuery(sql)){
 
             // loop through the result set
             while (result.next()) {
@@ -75,9 +75,9 @@ public class DatabaseHandler {
                 "WHERE field_id = (SELECT field_id FROM inventory WHERE filename IS NULL ORDER BY field_id LIMIT 1)", itemName);
 
         try {
-                Statement statement = connection.createStatement();
-                statement.executeUpdate(sql);
-                return true;
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            return true;
 
         }
         catch (SQLException e) {

@@ -134,7 +134,7 @@ public class EscapeRoomGame extends Application {
         door.setHighlightOnHover();
         door.setParentScene(3);
         door.setOnMouseClicked(mouseEvent -> {
-                SpriteEvents.renderLock(door);
+            SpriteEvents.renderLock(door);
         });
 
         // Setting up the navigation buttons
