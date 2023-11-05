@@ -25,12 +25,13 @@ public class SpriteEvents {
     // Safe things
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
     public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
-    public static boolean isSafeUnlocked;
     // Inventory things
     static List<ClickableSprite> items = new ArrayList<>();
     public static ImageView inventory = new ImageView("file:assets/inventory.png");
     // Door things
     public static ImageView lock = new ImageView("file:assets/lock1_closeup.png");
+    public static ClickableSprite bedZoomed = new ClickableSprite("file:assets/bed_zoom.png", "Move Pillow", 0 ,0);
+    public static ImageView bedZoomedNoPillow = new ClickableSprite("file:assets/bed_zoom_zoom_wroooom.png", "", 0, 0);
     public static int locksOpen = 0;
 
     public static void initialize() {
@@ -38,11 +39,14 @@ public class SpriteEvents {
 
         // I've split initialization into each sprite, so it's less cluttered
         initializeSafe();
+        initializeBed();
         initializeInventory();
         initializeLock();
     }
 
     // --- SAFE METHODS ---
+    // I didn't know they could be dangerous
+    // I'll see myself out after this one
     private static void initializeSafe() {
         keypad.setVisible(false);
 
@@ -99,6 +103,24 @@ public class SpriteEvents {
         exitButton();
     }
 
+    static void initializeBed() {
+        bedZoomed.setOnMouseClicked(mouseEvent -> {
+            zoomZoomToBed();
+            renderChildSprite("key_2.png", -150, -50);
+        });
+    }
+    static void zoomZoomToBed() {
+        bedZoomedNoPillow.toFront();
+
+        exitButton();
+    }
+
+    // idfc if it looks weird, im tired ok, it'll work
+    public static void zoomToBed() {
+        bedZoomed.show();
+        exitButton();
+    }
+
     // --- INVENTORY METHODS ---
     private static void initializeInventory() {
         inventory.setVisible(false);
@@ -116,7 +138,7 @@ public class SpriteEvents {
                 String currentItemName = itemsPaths.get(currentItem);
                 items.add(new ClickableSprite(iconizeName(currentItemName),
                         filenameToLabel(currentItemName), (11 + 25) * 8 * j, ((7+25) * 8 * i)+48));
-                        // Y adjusted to the difference of top and bottom margins of inventory background
+                // Y adjusted to the difference of top and bottom margins of inventory background
                 currentItem += 1;
             }
         }
@@ -128,24 +150,24 @@ public class SpriteEvents {
         inventory.setVisible(true);
         inventory.toFront();
         for (int i = 0; i < items.size(); i++) {
-                ClickableSprite item = items.get(i);
-                if (item.name.startsWith("Key")) {
-                    item.setOnlyLabelOnHoover();
-                }
-                else {
-                    item.setHighlightOnHover();
-                    item.setOnMouseClicked(event -> {
-                        darkenBackground.toFront();
-                        exitButton.hide();
-                        String zoomized = item.getImage().getUrl().replace("_icon", "_zoom");
-                        ImageView zoomedNote = new ImageView(new Image(zoomized));
-                        root.getChildren().add(zoomedNote);
-                        zoomedNote.setVisible(true);
-                        zoomedNote.toFront();
-                        itemZoomExitButton();
-                    });
-                }
-                item.show();
+            ClickableSprite item = items.get(i);
+            if (item.name.startsWith("Key")) {
+                item.setOnlyLabelOnHoover();
+            }
+            else {
+                item.setHighlightOnHover();
+                item.setOnMouseClicked(event -> {
+                    darkenBackground.toFront();
+                    exitButton.hide();
+                    String zoomized = item.getImage().getUrl().replace("_icon", "_zoom");
+                    ImageView zoomedNote = new ImageView(new Image(zoomized));
+                    root.getChildren().add(zoomedNote);
+                    zoomedNote.setVisible(true);
+                    zoomedNote.toFront();
+                    itemZoomExitButton();
+                });
+            }
+            item.show();
         }
         exitButton();
     }
@@ -334,7 +356,6 @@ public class SpriteEvents {
         temp = temp.replace("file:assets/", "");
         temp = temp.replace(".png", "");
         temp = temp.replace("_"," ");
-        String result = temp.substring(0, 1).toUpperCase() + temp.substring(1);
-        return result;
+        return temp.substring(0, 1).toUpperCase() + temp.substring(1);
     }
 }
