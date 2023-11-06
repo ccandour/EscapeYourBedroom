@@ -40,14 +40,19 @@ class ClickableSprite extends ImageView {
         toFront();
     }
 
+    // no argument - rescale by default 1.1
     void setHighlightAndLabelOnHover() {
+        setHighlightAndLabelOnHover(1.1);
+    }
+
+    void setHighlightAndLabelOnHover(double rescale) {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, show its name on the name tag and highlight it
                 Utilities.nameTag.setText(name);
                 Utilities.nameTag.show();
-                setScaleX(this.getScaleX() * 1.1);
-                setScaleY(this.getScaleY() * 1.1);
+                setScaleX(this.getScaleX() * rescale);
+                setScaleY(this.getScaleY() * rescale);
             }
         });
         setOnMouseExited(event -> {
