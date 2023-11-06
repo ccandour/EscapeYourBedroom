@@ -17,6 +17,7 @@ public class BedScripts {
         });
     }
 
+    // 'Zoom' in to zoomed bed
     static void zoomZoomToBed() {
         bedZoomedNoPillow.toFront();
         exitButton();

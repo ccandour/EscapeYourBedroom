@@ -19,6 +19,7 @@ public class InventoryScripts {
         root.getChildren().add(inventory);
     }
 
+    // Refresh inventory items
     private static void refreshInventory() {
         List<String> itemsPaths = DatabaseHandler.getAllItems();
         int currentItem = 0;
@@ -31,8 +32,12 @@ public class InventoryScripts {
                 String currentItemName = itemsPaths.get(currentItem);
 
                 // Y adjusted to the difference of top and bottom margins of inventory background
-                items.add(new ClickableSprite(iconizeName(currentItemName),
-                        filenameToLabel(currentItemName), (11 + 25) * 8 * j, ((7+25) * 8 * i)+48));
+                items.add(new ClickableSprite(
+                        iconizeName(currentItemName),
+                        filenameToLabel(currentItemName),
+                        (11 + 25) * 8 * j,
+                        ((7+25) * 8 * i)+48
+                ));
 
                 currentItem += 1;
             }
@@ -41,16 +46,16 @@ public class InventoryScripts {
 
     public static void renderInventory() {
         refreshInventory();
-        setDarkenBackground();
+        darkenBackground();
 
         inventory.setVisible(true);
         inventory.toFront();
 
         for (ClickableSprite item : items) {
             if (item.name.startsWith("Key")) {
-                item.setOnlyLabelOnHoover();
+                item.setOnlyLabelOnHover();
             } else {
-                item.setHighlightOnHover();
+                item.setHighlightAndLabelOnHover();
 
                 item.setOnMouseClicked(event -> {
                     darkenBackground.toFront();
@@ -58,8 +63,8 @@ public class InventoryScripts {
 
                     System.out.println(item.getImage().getUrl());
 
-                    String zoomized = item.getImage().getUrl().replace("_icon", "_zoom");
-                    ImageView zoomedNote = new ImageView(new Image(zoomized));
+                    String zoomName = item.getImage().getUrl().replace("_icon", "_zoom");
+                    ImageView zoomedNote = new ImageView(new Image(zoomName));
 
                     zoomedNote.setVisible(true);
                     zoomedNote.toFront();
@@ -74,10 +79,11 @@ public class InventoryScripts {
         exitButton();
     }
 
+    // Create an exit button when zooming into an item
     public static void itemZoomExitButton() {
         exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
         exitButton.show();
-        exitButton.setHighlightOnHover();
+        exitButton.setHighlightAndLabelOnHover();
 
         exitButton.setOnMouseClicked(event -> {
             // Hide keypad and render the background once again

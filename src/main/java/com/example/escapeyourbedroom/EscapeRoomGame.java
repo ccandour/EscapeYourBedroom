@@ -25,9 +25,7 @@ public class EscapeRoomGame extends Application {
     public static ClickableSprite childSprite;
 
     // A list of lists of all sprites in a given scene (not that complicated once you go insane)
-    // I decided to make it this way so when you want to get all the sprites from the current scene you can just sceneSprites.get(currentBackground)
     public static List<List<ClickableSprite>> sceneSprites = new ArrayList<>();
-
 
     public static void main(String[] args) {
         launch(args);
@@ -35,8 +33,8 @@ public class EscapeRoomGame extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        DatabaseHandler.main();
-        primaryStage.setTitle("Escape Room Game");
+        DatabaseHandler.connectToDatabase();
+        primaryStage.setTitle("Why are you looking at this?");
         root = new StackPane();
         Scene scene = new Scene(root, WIDTH, HEIGHT);
         primaryStage.setScene(scene);
@@ -57,8 +55,6 @@ public class EscapeRoomGame extends Application {
             sceneSprites.add(new ArrayList<>());
         }
 
-
-
         // Set the visible background to the first scene
         sceneBackgrounds.get(0).toFront();
 
@@ -72,44 +68,44 @@ public class EscapeRoomGame extends Application {
         ClickableSprite drawer = new ClickableSprite("file:assets/drawer.png", "Drawer", -600 , 250);
         drawer.setOnMouseClicked(event -> {
             if (!drawer.isZoomed) {
-                drawer.zoomInto();
+                drawer.zoomIn();
                 Utilities.renderChildSprite("note_1.png", -200, -70);
                 Utilities.exitButton(drawer);
             }
         });
-        drawer.setHighlightOnHover();
+        drawer.setHighlightAndLabelOnHover();
         drawer.setParentScene(2);
 
         ClickableSprite box = new ClickableSprite("file:assets/box.png", "Box", -600 , 250);
         box.setOnMouseClicked(event -> {
             if (!box.isZoomed) {
-                box.zoomInto();
+                box.zoomIn();
                 Utilities.exitButton(box);
                 Utilities.renderChildSprite("key_1.png", -95, -50);
             }
         });
-        box.setHighlightOnHover();
+        box.setHighlightAndLabelOnHover();
         box.setParentScene(1);
 
         ClickableSprite painting = new ClickableSprite("file:assets/painting.png", "Painting", 400, -200);
+        painting.setHighlightAndLabelOnHover();
+        painting.setParentScene(0);
         painting.setOnMouseClicked(event -> {
             if (!painting.isZoomed) {
                 Utilities.renderBackground("d7bc5f");
                 Utilities.renderChildSprite("note_2.png", 0, -276);
-                painting.zoomInto();
+                painting.zoomIn();
                 Utilities.exitButton(painting);
             }
         });
-        painting.setHighlightOnHover();
-        painting.setParentScene(0);
 
         ClickableSprite safe = new ClickableSprite("file:assets/safe.png", "Safe", 500, 250);
-        safe.setHighlightOnHover();
+        safe.setHighlightAndLabelOnHover();
         safe.setParentScene(2);
         safe.setOnMouseClicked(mouseEvent -> {
             if (DatabaseHandler.checkProgression("safe")) {
                 if (!safe.isZoomed) {
-                    safe.zoomInto();
+                    safe.zoomIn();
                     Utilities.exitButton(safe);
                     Utilities.renderChildSprite("key_3.png", 150, 350);
                 }
@@ -119,29 +115,29 @@ public class EscapeRoomGame extends Application {
         SafeScripts.initializeSafe();
 
         ClickableSprite bed = new ClickableSprite("file:assets/bed.png", "Bed", 500, 300);
-        bed.setHighlightOnHover();
+        bed.setHighlightAndLabelOnHover();
         bed.setParentScene(1);
         bed.setOnMouseClicked(mouseEvent -> BedScripts.zoomToBed());
         BedScripts.initializeBed();
 
         DoorScripts.initializeLock();
         ClickableSprite door = new ClickableSprite("file:assets/door_" + (DoorScripts.locksOpen) + ".png", "Door [LOCKED]", 250, -8);
-        door.setHighlightOnHover();
+        door.setHighlightAndLabelOnHover();
         door.setParentScene(3);
         door.setOnMouseClicked(mouseEvent -> DoorScripts.renderLock(door));
 
 
         // Add the navigation buttons
         rightArrow = new ClickableSprite("file:assets/right_arrow.png", "Go right", 900, 0);
-        rightArrow.setHighlightOnHover();
+        rightArrow.setHighlightAndLabelOnHover();
         rightArrow.setOnMouseClicked(mouseEvent -> Utilities.nextBackground());
 
         leftArrow = new ClickableSprite("file:assets/left_arrow.png", "Go left", -900, 0);
-        leftArrow.setHighlightOnHover();
+        leftArrow.setHighlightAndLabelOnHover();
         leftArrow.setOnMouseClicked(mouseEvent -> Utilities.prevBackground());
 
         backpack = new ClickableSprite("file:assets/backpack.png", "Open inventory", 750, -450);
-        backpack.setHighlightOnHover();
+        backpack.setHighlightAndLabelOnHover();
         backpack.setOnMouseClicked(mouseEvent -> InventoryScripts.renderInventory());
 
         Utilities.reRenderBackground();

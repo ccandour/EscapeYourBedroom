@@ -25,26 +25,29 @@ class ClickableSprite extends ImageView {
         setTranslateX(x);
         setTranslateY(y);
 
-        // Automatically try to assign zoomed image
+        // Try to automatically assign zoomed image
         zoomedImage = new Image(Utilities.zoomifyName(imagePath));
 
         root.getChildren().add(this);
     }
+
     void hide() {
         setVisible(false);
     }
+
     void show() {
         setVisible(true);
         toFront();
     }
-    void setHighlightOnHover() {
+
+    void setHighlightAndLabelOnHover() {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, show its name on the name tag and highlight it
                 Utilities.nameTag.setText(name);
+                Utilities.nameTag.show();
                 setScaleX(this.getScaleX() * 1.1);
                 setScaleY(this.getScaleY() * 1.1);
-                Utilities.nameTag.show();
             }
         });
         setOnMouseExited(event -> {
@@ -63,7 +66,7 @@ class ClickableSprite extends ImageView {
     }
 
     // For inventory
-    void setOnlyLabelOnHoover() {
+    void setOnlyLabelOnHover() {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, show its name on the name tag and highlight it
@@ -85,7 +88,7 @@ class ClickableSprite extends ImageView {
     }
 
     // For safe numpad
-    void setOnlyZoomOnHoover() {
+    void setOnlyHighlightOnHover() {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, zoom it 1.1 times
@@ -102,14 +105,14 @@ class ClickableSprite extends ImageView {
         });
     }
 
+    // Add sprite to its appropriate list and hide it if it shouldn't be displayed
     void setParentScene(int sceneIndex) {
-        // Add sprite to its appropriate list and hide it if it shouldn't be displayed
         sceneSprites.get(sceneIndex).add(this);
         if (sceneIndex != currentScene) hide();
     }
 
-    void zoomInto() {
-        // Revert scale back to the un-zoomed one so that the sprite isn't growing when zooming and un-zooming
+    void zoomIn() {
+        // Revert scale back to original
         setScaleX(1);
         setScaleY(1);
 
@@ -133,8 +136,8 @@ class ClickableSprite extends ImageView {
         // Hide the exit button on zoom-out
         Utilities.exitButton.hide();
 
+        // Peter's weird-ass code
         if (childSprite != null) childSprite.hide();
         isZoomed = false;
-
     }
 }

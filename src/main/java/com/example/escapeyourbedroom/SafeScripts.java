@@ -14,10 +14,11 @@ import static com.example.escapeyourbedroom.Utilities.*;
 public class SafeScripts {
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
     public static ImageView numpad = new ImageView("file:assets/safe_numpad.png");
+
+    // This has to be an array because javaFX shits itself when it sees a non-final variable inside a timeline, but you can still modify values in final arrays for some fucking reason?
     private static final String[] code = {""};
     public static void initializeSafe() {
         numpad.setVisible(false);
-
         int temp = 0;
 
         // Add numpad buttons
@@ -26,6 +27,7 @@ public class SafeScripts {
                 temp += 1;
                 String imagePath = "file:assets/safe_numpad_" + temp + ".png";
 
+                // 20 is the size of a single sprite in pixels, 7 is the spacing between them and 8 is how much we upscale each sprite
                 safeNumpadButtons.add(new ClickableSprite(imagePath, String.valueOf(temp), (7 + 20) * 8 * j, (7 + 20) * 8 * i));
                 safeNumpadButtons.get(safeNumpadButtons.size() - 1).hide();
             }
@@ -33,18 +35,21 @@ public class SafeScripts {
 
         root.getChildren().add(numpad);
 
+        // When the cursor enters the numpad, hide the name tag
         numpad.setOnMouseMoved(mouseEvent -> {
             nameTag.setPosToCursor(mouseEvent.getSceneX(), mouseEvent.getSceneY());
             nameTag.show();
+
+            // if the inputted code is empty set the nametag to "____"
             if (code[0].isEmpty()) nameTag.setText("____");
         });
 
         // When cursor exits the numpad hide the nametag
         numpad.setOnMouseExited(mouseEvent -> nameTag.hide());
 
-        // This has to be an array because javaFX shits itself when it sees a non-final variable inside a timeline, but you can still modify values in final arrays for some fucking reason?
+
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
-            safeNumpadButton.setOnlyZoomOnHoover();
+            safeNumpadButton.setOnlyHighlightOnHover();
             safeNumpadButton.setOnMouseClicked(mouseEvent -> {
                 code[0] += safeNumpadButton.name;
 
@@ -73,7 +78,7 @@ public class SafeScripts {
 
                     PauseTransition pauseTransition = new PauseTransition(Duration.millis(750));
                     pauseTransition.setOnFinished(event -> {
-                        // If the user didn't start entering new code before the time runs out reset the name tag
+                        // If the user hasn't started entering a new code before the time runs out reset the name tag
                         if(code[0].isEmpty()) {
                             nameTag.setText("____");
                         }
@@ -91,13 +96,15 @@ public class SafeScripts {
     }
 
     public static void safeShowNumpad() {
-        setDarkenBackground();
+        darkenBackground();
         numpad.setVisible(true);
         numpad.toFront();
+
         code[0] = "";
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
             safeNumpadButton.show();
         }
+
         exitButton();
     }
 }

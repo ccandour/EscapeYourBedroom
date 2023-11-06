@@ -99,7 +99,7 @@ public class Utilities {
     public static void exitButton() {
         exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
         exitButton.show();
-        exitButton.setHighlightOnHover();
+        exitButton.setHighlightAndLabelOnHover();
         exitButton.setOnMouseClicked(event -> {
             // Hide keypad and render the background once again
             reRenderBackground();
@@ -113,7 +113,7 @@ public class Utilities {
     public static void exitButton(ClickableSprite sprite) {
         exitButton = new ClickableSprite("file:assets/exit_button.png", "Go back", 796, -360);
         exitButton.show();
-        exitButton.setHighlightOnHover();
+        exitButton.setHighlightAndLabelOnHover();
         exitButton.setOnMouseClicked(event -> {
             sprite.zoomOut();
             if (Utilities.bg != null) {
@@ -123,7 +123,7 @@ public class Utilities {
     }
 
     // Hides all buttons and darkens the background
-    public static void setDarkenBackground() {
+    public static void darkenBackground() {
         rightArrow.hide();
         leftArrow.hide();
         backpack.hide();
@@ -226,7 +226,7 @@ public class Utilities {
 
         childSprite = new ClickableSprite(imagePath, "Pick up", X, Y);
         childSprite.show();
-        childSprite.setHighlightOnHover();
+        childSprite.setHighlightAndLabelOnHover();
 
         childSprite.setOnMouseClicked(event -> {
             DatabaseHandler.addItemToInventory(filename);

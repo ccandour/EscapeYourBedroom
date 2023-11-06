@@ -6,13 +6,10 @@ import java.util.List;
 
 public class DatabaseHandler {
     static Connection connection;
-    public static void main() {
-        Connection c = null;
-
+    public static void connectToDatabase() {
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
-            connection = c;
+            connection = DriverManager.getConnection("jdbc:sqlite:inventory.db");
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
@@ -40,7 +37,7 @@ public class DatabaseHandler {
         return items;
     }
 
-    // Method to check if we already picked up an item, we provide an itemName, like "key_1.png"
+    // Check if an item is already picked up
     public static boolean isItemPickedUp(String itemName) {
         String sql = "SELECT filename FROM inventory";
 
@@ -51,6 +48,8 @@ public class DatabaseHandler {
             // Loop through the item names in inventory, checking if any matches
             while (result.next()) {
                 String filename = result.getString("filename");
+
+                // If the item is already in inventory return true
                 if (!(filename == null) && filename.equals(itemName)) {
                     return true;
                 }
@@ -61,43 +60,38 @@ public class DatabaseHandler {
         return false;
     }
 
-    // Method to add an item to the inventory, we provide an itemName, like "key_1.png"
-    public static boolean addItemToInventory(String itemName) {
+    public static void addItemToInventory(String itemName) {
         // Check if we didn't already pick up that item for good measure
-        if (isItemPickedUp(itemName)) return false;
+        if (isItemPickedUp(itemName)) return;
 
         // Add our item to the first available slot
         String sql = String.format("UPDATE inventory " +
                 "SET filename = '%s' " +
+                // this is quite the mouthful
                 "WHERE field_id = (SELECT field_id FROM inventory WHERE filename IS NULL ORDER BY field_id LIMIT 1)", itemName);
-
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
-            return true;
-
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return false;
     }
 
-    public static boolean removeItemFromInventory(String itemName) {
+    public static void removeItemFromInventory(String itemName) {
         String sql = String.format("UPDATE inventory " +
                 "SET filename = NULL WHERE filename = '%s'", itemName);
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
-            return true;
 
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return false;
     }
 
+    // Check at what progression point the user is
     public static boolean checkProgression(String progressionPoint) {
         String sql = "SELECT name, value FROM progression";
 
@@ -119,20 +113,20 @@ public class DatabaseHandler {
         return false;
     }
 
-    public static boolean changeProgression(String progressionPoint) {
+    // Update progression point
+    public static void changeProgression(String progressionPoint) {
         String sql = String.format("UPDATE progression " +
                 "SET value = 1 WHERE name = '%s'", progressionPoint);
 
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
-            return true;
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        return false;
     }
+
 
     public static int checkLocksOpen() {
         int locksOpen = 0;
@@ -145,23 +139,30 @@ public class DatabaseHandler {
             while (result.next()) {
                 String name = result.getString("name");
                 int value = result.getInt("value");
-                if (name.startsWith("lock") && value == 1 && Integer.parseInt(String.valueOf(name.charAt(5))) > locksOpen) {
-                    locksOpen = Integer.parseInt(String.valueOf(name.charAt(5)));
+
+                // If the currently checked item is a lock, check which one. If it's "higher tier" than last used one, update progression
+                if (name.startsWith("lock")) {
+                    // 6th char because this is the char that determines lock number in e.g. "lock_2" (I think, IDK this is Peter's code)
+                    int sixthChar = Integer.parseInt(String.valueOf(name.charAt(5)));
+
+                    if (name.startsWith("lock") && value == 1 && sixthChar > locksOpen) {
+                        locksOpen = sixthChar;
+                    }
                 }
             }
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return locksOpen;
     }
 
+    // Reset the database, essentially reset the gamestate
     public static void resetDB() {
-        String inventory = String.format("UPDATE inventory " +
-                "SET filename = NULL");
+        String inventory = "UPDATE inventory " +
+                "SET filename = NULL";
 
-        String progression = String.format("UPDATE progression " +
-                "SET value = 0");
+        String progression = "UPDATE progression " +
+                "SET value = 0";
 
         try {
             Statement statement = connection.createStatement();
