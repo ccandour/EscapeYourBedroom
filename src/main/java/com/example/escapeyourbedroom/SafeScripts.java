@@ -1,6 +1,8 @@
 package com.example.escapeyourbedroom;
 
+import javafx.animation.PauseTransition;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +13,10 @@ import static com.example.escapeyourbedroom.Utilities.*;
 @SuppressWarnings("ClassEscapesDefinedScope")
 public class SafeScripts {
     public static List<ClickableSprite> safeNumpadButtons = new ArrayList<>();
-    public static ImageView keypad = new ImageView("file:assets/safe_numpad.png");
-
+    public static ImageView numpad = new ImageView("file:assets/safe_numpad.png");
+    private static final String[] code = {""};
     public static void initializeSafe() {
-        keypad.setVisible(false);
+        numpad.setVisible(false);
 
         int temp = 0;
 
@@ -29,15 +31,26 @@ public class SafeScripts {
             }
         }
 
-        root.getChildren().add(keypad);
+        root.getChildren().add(numpad);
+
+        numpad.setOnMouseMoved(mouseEvent -> {
+            nameTag.setPosToCursor(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+            nameTag.show();
+            if (code[0].isEmpty()) nameTag.setText("____");
+        });
+
+        // When cursor exits the numpad hide the nametag
+        numpad.setOnMouseExited(mouseEvent -> nameTag.hide());
 
         // This has to be an array because javaFX shits itself when it sees a non-final variable inside a timeline, but you can still modify values in final arrays for some fucking reason?
-        final String[] code = {""};
-
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
             safeNumpadButton.setOnlyZoomOnHoover();
             safeNumpadButton.setOnMouseClicked(mouseEvent -> {
                 code[0] += safeNumpadButton.name;
+
+                // Set text to code with underscores e.g. "12__" or "123_"
+                nameTag.show();
+                nameTag.setText(code[0] + "_".repeat(Math.max(0, 4 - code[0].length())));
 
                 // If entered code is correct, set vault as unlocked
                 if (code[0].equals("1943")) {
@@ -46,7 +59,7 @@ public class SafeScripts {
                     for (ClickableSprite button : safeNumpadButtons) {
                         button.hide();
                     }
-                    keypad.setVisible(false);
+                    numpad.setVisible(false);
                     reRenderBackground();
                     exitButton.hide();
 
@@ -57,20 +70,34 @@ public class SafeScripts {
                 else if (code[0].length() == 4){
                     popoutMessage.showMessage("Wrong code...", 1000);
                     code[0] = "";
+
+                    PauseTransition pauseTransition = new PauseTransition(Duration.millis(750));
+                    pauseTransition.setOnFinished(event -> {
+                        // If the user didn't start entering new code before the time runs out reset the name tag
+                        if(code[0].isEmpty()) {
+                            nameTag.setText("____");
+                        }
+                    });
+
+                    pauseTransition.play();
                 }
+            });
+            safeNumpadButton.setOnMouseMoved(mouseEvent -> {
+                nameTag.setPosToCursor(mouseEvent.getSceneX(), mouseEvent.getSceneY());
+                nameTag.show();
+                if (code[0].isEmpty()) nameTag.setText("____");
             });
         }
     }
 
     public static void safeShowNumpad() {
         setDarkenBackground();
-        keypad.setVisible(true);
-        keypad.toFront();
-
+        numpad.setVisible(true);
+        numpad.toFront();
+        code[0] = "";
         for (ClickableSprite safeNumpadButton : safeNumpadButtons) {
             safeNumpadButton.show();
         }
-
         exitButton();
     }
 }

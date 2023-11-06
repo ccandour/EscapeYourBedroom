@@ -105,6 +105,7 @@ public class Utilities {
             reRenderBackground();
             updateSpritesVisibility(currentScene, true);
             exitButton.hide();
+            popoutMessage.hide();
             root.getChildren().remove(darkenBackground);
         });
     }
