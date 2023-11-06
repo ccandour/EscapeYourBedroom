@@ -16,74 +16,84 @@ class ClickableSprite extends ImageView {
         // Set the displayed image
         normalImage = new Image(imagePath);
         setImage(normalImage);
+
         this.name = name;
         x = spriteX;
         y = spriteY;
+
         // setTranslate moves the image from [0,0], which is the middle of the screen. Apparently it's the only way to move the image because the other two don't work? Classic javaFX shenanigans
         setTranslateX(x);
         setTranslateY(y);
+
+        // Try to automatically assign zoomed image
+        zoomedImage = new Image(Utilities.zoomifyName(imagePath));
+
         root.getChildren().add(this);
     }
+
     void hide() {
         setVisible(false);
     }
+
     void show() {
         setVisible(true);
         toFront();
     }
-    void setHighlightOnHover() {
 
-        // For something funny, try to put your mouse on the edge of a sprite (try different edges, only works on some)
+    // no argument - rescale by default 1.1
+    void setHighlightAndLabelOnHover() {
+        setHighlightAndLabelOnHover(1.1);
+    }
 
-        // TODO: Make highlighting add a white outline to the sprite instead of resizing it (might be difficult)
+    void setHighlightAndLabelOnHover(double rescale) {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, show its name on the name tag and highlight it
-                nameTag.setText(name);
-                setScaleX(this.getScaleX() * 1.1);
-                setScaleY(this.getScaleY() * 1.1);
-                nameTag.show();
+                Utilities.nameTag.setText(name);
+                Utilities.nameTag.show();
+                setScaleX(this.getScaleX() * rescale);
+                setScaleY(this.getScaleY() * rescale);
             }
         });
         setOnMouseExited(event -> {
             if (!isZoomed) {
                 // When the mouse exits the sprite, hide the name tag and stop highlighting it
-                nameTag.hide();
+                Utilities.nameTag.hide();
                 setScaleX(1);
                 setScaleY(1);
             }
         });
         setOnMouseMoved(mouseEvent -> {
             // If the sprite its zoomed in, make the name tag follow the cursor; otherwise hide it
-            if (!isZoomed) nameTag.setPosToCursor(mouseEvent.getSceneX(),  mouseEvent.getSceneY());
-            else nameTag.hide();
+            if (!isZoomed) Utilities.nameTag.setPosToCursor(mouseEvent.getSceneX(),  mouseEvent.getSceneY());
+            else Utilities.nameTag.hide();
         });
     }
 
     // For inventory
-    void setOnlyLabelOnHoover() {
+    void setOnlyLabelOnHover() {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, show its name on the name tag and highlight it
-                nameTag.setText(name);
-                nameTag.show();
+                Utilities.nameTag.setText(name);
+                Utilities.nameTag.show();
             }
         });
         setOnMouseExited(event -> {
             if (!isZoomed) {
                 // When the mouse exits the sprite, hide the name tag and stop highlighting it
-                nameTag.hide();
+                Utilities.nameTag.hide();
             }
         });
         setOnMouseMoved(mouseEvent -> {
             // If the sprite its zoomed in, make the name tag follow the cursor; otherwise hide it
-            if (!isZoomed) nameTag.setPosToCursor(mouseEvent.getSceneX(),  mouseEvent.getSceneY());
-            else nameTag.hide();
+            if (!isZoomed) Utilities.nameTag.setPosToCursor(mouseEvent.getSceneX(),  mouseEvent.getSceneY());
+            else Utilities.nameTag.hide();
         });
     }
 
     // For safe numpad
-    void setOnlyZoomOnHoover() {
+    void setOnlyHighlightOnHover() {
         setOnMouseEntered(event -> {
             if (!isZoomed) {
                 // When mouse enters a sprite, zoom it 1.1 times
@@ -100,18 +110,19 @@ class ClickableSprite extends ImageView {
         });
     }
 
+    // Add sprite to its appropriate list and hide it if it shouldn't be displayed
     void setParentScene(int sceneIndex) {
         sceneSprites.get(sceneIndex).add(this);
         if (sceneIndex != currentScene) hide();
     }
 
-    // The name needs some refinement
-    void zoomInto() {
-        // Revert scale back to the un-zoomed one so that the sprite isn't growing when zooming and un-zooming
+    void zoomIn() {
+        // Revert scale back to original
         setScaleX(1);
         setScaleY(1);
+
         // Hide all sprites on the current scene
-        updateSpritesVisibility(currentScene, false);
+        Utilities.updateSpritesVisibility(currentScene, false);
 
         // Renders the zoomed-in item
         setImage(zoomedImage);
@@ -122,16 +133,16 @@ class ClickableSprite extends ImageView {
     }
     void zoomOut() {
         // Show all sprites on the current scene
-        updateSpritesVisibility(currentScene, true);
+        Utilities.updateSpritesVisibility(currentScene, true);
         setImage(this.normalImage);
         setTranslateX(x);
         setTranslateY(y);
-        exitButton.hide(); // Hide the exit button on zoom-out
+
+        // Hide the exit button on zoom-out
+        Utilities.exitButton.hide();
+
+        // Peter's weird-ass code
         if (childSprite != null) childSprite.hide();
         isZoomed = false;
-
-    }
-    void setZoomedImage(String imagePath) {
-        zoomedImage = new Image(imagePath);
     }
 }

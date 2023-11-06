@@ -30,17 +30,18 @@ public class NameTag  {
 
         hide();
 
-        // Add them to root
         root.getChildren().add(text);
         root.getChildren().add(box);
     }
+
+    // Update nameTag text and it's box size
     void setText(String s) {
-        // Update nameTag text and it's box size
         text.setText(s);
         updateBoxSize();
     }
+
+    // Set nameTag box size to be slightly bigger than the text
     void updateBoxSize() {
-        // Set nameTag box size to be slightly bigger than the text
         box.setWidth(text.getLayoutBounds().getWidth() + 10);
         box.setHeight(text.getLayoutBounds().getHeight() + 10);
     }
@@ -55,6 +56,7 @@ public class NameTag  {
             text.setTranslateX(mouseX - (WIDTH / 2.0) - box.getWidth() / 2 - 15);
             box.setTranslateX(text.getTranslateX());
         }
+
         // Set the Y position of the nameTag
         text.setTranslateY(mouseY - (HEIGHT / 2.0) - box.getHeight() / 2 + 10);
         box.setTranslateY(text.getTranslateY() - 5);
