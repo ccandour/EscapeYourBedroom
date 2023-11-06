@@ -17,6 +17,7 @@ public class PopoutMessage {
     Font font;
     Text text = new Text();
     Rectangle box = new Rectangle();
+
     PopoutMessage() {
         File fontFile = new File("PixelFont.ttf");
         font = Font.loadFont(fontFile.toURI().toString(), 36);
@@ -35,11 +36,13 @@ public class PopoutMessage {
         root.getChildren().add(box);
     }
     public void showMessage(String message) {
+        // Show popout message
         show();
         text.setOpacity(1);
         box.setOpacity(1);
-
         setText(message);
+
+        // Set it to start fading out after some time, depending on how long the message is
         PauseTransition pauseTransition = new PauseTransition(Duration.millis(600 + (message.length() * 75)));
 
         Timeline fadeout = new Timeline(new KeyFrame(Duration.millis(1000/60.0), event -> {
@@ -51,13 +54,15 @@ public class PopoutMessage {
         pauseTransition.setOnFinished(event -> fadeout.play());
         pauseTransition.play();
     }
-    public void showMessage(String message, int duration) {
+    public void showMessage(String message, int durationMillis) {
+        // Show popout message
         show();
         text.setOpacity(1);
         box.setOpacity(1);
-
         setText(message);
-        PauseTransition pauseTransition = new PauseTransition(Duration.millis(duration));
+
+        // Set it to start fading out after 'durationMillis'
+        PauseTransition pauseTransition = new PauseTransition(Duration.millis(durationMillis));
 
         Timeline fadeout = new Timeline(new KeyFrame(Duration.millis(1000/60.0), event -> {
             text.setOpacity(text.getOpacity() - 0.01);
